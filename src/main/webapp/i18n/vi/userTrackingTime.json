@@ -1,0 +1,27 @@
+{
+  "vinpuApp": {
+    "userTrackingTime": {
+      "home": {
+        "title": "User Tracking Times",
+        "createLabel": "Thêm mới một User Tracking Time",
+        "createOrEditLabel": "Thêm mới hoặc cập nhật User Tracking Time",
+        "search": "Tìm User Tracking Time",
+        "notFound": "No User Tracking Times found"
+      },
+      "created": "Một User Tracking Time mới được tạo với định danh {{ param }}",
+      "updated": "Một User Tracking Time cập nhật với định danh {{ param }}",
+      "deleted": "Một User Tracking Time đã xóa với định danh {{ param }}",
+      "delete": {
+        "question": "Bạn có chắc là muốn xóa User Tracking Time {{ id }}?"
+      },
+      "detail": {
+        "title": "User Tracking Time"
+      },
+      "startTime": "Start Time",
+      "endTime": "End Time",
+      "duration": "Duration",
+      "role": "Role",
+      "user": "User"
+    }
+  }
+}

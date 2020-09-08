@@ -3,6 +3,8 @@ package com.vinid.vinpu.web.websocket;
 import static com.vinid.vinpu.config.WebsocketConfiguration.IP_ADDRESS;
 
 import com.vinid.vinpu.service.UserService;
+import com.vinid.vinpu.service.utils.RedisService;
+import com.vinid.vinpu.web.rest.vm.RedisUser;
 import com.vinid.vinpu.web.websocket.dto.ActivityDTO;
 
 import java.security.Principal;
@@ -25,10 +27,13 @@ public class ActivityService implements ApplicationListener<SessionDisconnectEve
     private final SimpMessageSendingOperations messagingTemplate;
     
     private final UserService userService;
+    
+    private final RedisService redisService;
 
-    public ActivityService(SimpMessageSendingOperations messagingTemplate, UserService userService) {
+    public ActivityService(SimpMessageSendingOperations messagingTemplate, UserService userService, RedisService redisService) {
         this.messagingTemplate = messagingTemplate;
         this.userService = userService;
+        this.redisService = redisService;
     }
 
     @MessageMapping("/topic/activity")
@@ -46,6 +51,7 @@ public class ActivityService implements ApplicationListener<SessionDisconnectEve
     public void onApplicationEvent(SessionDisconnectEvent event) {
         ActivityDTO activityDTO = new ActivityDTO();
         this.userService.updateStatus(event.getUser().getName(), false);
+        RedisUser redis = redisService.getRedisUserByToken(event.getUser().getName());
         activityDTO.setSessionId(event.getSessionId());
         activityDTO.setPage("logout");
         messagingTemplate.convertAndSend("/topic/tracker", activityDTO);

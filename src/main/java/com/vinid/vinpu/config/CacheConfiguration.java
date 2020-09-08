@@ -81,6 +81,7 @@ public class CacheConfiguration {
             createCache(cm, com.vinid.vinpu.domain.User.class.getName(), jcacheConfiguration);
             createCache(cm, com.vinid.vinpu.domain.Authority.class.getName(), jcacheConfiguration);
             createCache(cm, com.vinid.vinpu.domain.User.class.getName() + ".authorities", jcacheConfiguration);
+            createCache(cm, com.vinid.vinpu.domain.UserTrackingTime.class.getName(), jcacheConfiguration);
             // jhipster-needle-redis-add-entry
         };
     }

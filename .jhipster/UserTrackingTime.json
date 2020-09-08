@@ -1,0 +1,43 @@
+{
+  "fluentMethods": true,
+  "clientRootFolder": "",
+  "relationships": [
+    {
+      "relationshipName": "user",
+      "otherEntityName": "user",
+      "relationshipType": "many-to-one",
+      "relationshipValidateRules": ["required"],
+      "otherEntityField": "id",
+      "ownerSide": true,
+      "otherEntityRelationshipName": "userTrackingTime"
+    }
+  ],
+  "fields": [
+    {
+      "fieldName": "startTime",
+      "fieldType": "Instant",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "endTime",
+      "fieldType": "Instant"
+    },
+    {
+      "fieldName": "duration",
+      "fieldType": "Double"
+    },
+    {
+      "fieldName": "role",
+      "fieldType": "String"
+    }
+  ],
+  "changelogDate": "20200908181009",
+  "dto": "mapstruct",
+  "searchEngine": "elasticsearch",
+  "service": "serviceClass",
+  "entityTableName": "user_tracking_time",
+  "databaseType": "sql",
+  "readOnly": false,
+  "jpaMetamodelFiltering": true,
+  "pagination": "no"
+}

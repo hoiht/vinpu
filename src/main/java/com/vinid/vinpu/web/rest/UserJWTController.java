@@ -3,9 +3,9 @@ package com.vinid.vinpu.web.rest;
 import com.vinid.vinpu.security.jwt.JWTFilter;
 import com.vinid.vinpu.security.jwt.TokenProvider;
 import com.vinid.vinpu.web.rest.vm.LoginVM;
-
+import com.vinid.vinpu.web.rest.vm.RedisUser;
 import com.vinid.vinpu.service.UserService;
-
+import com.vinid.vinpu.service.utils.RedisService;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import org.springframework.http.HttpHeaders;
@@ -16,6 +16,8 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.Instant;
 
 import javax.validation.Valid;
 
@@ -31,11 +33,14 @@ public class UserJWTController {
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
     
     private final UserService userService;
+    
+    private final RedisService redisService;
 
-    public UserJWTController(TokenProvider tokenProvider, AuthenticationManagerBuilder authenticationManagerBuilder, UserService userService) {
+    public UserJWTController(TokenProvider tokenProvider, AuthenticationManagerBuilder authenticationManagerBuilder, UserService userService, RedisService redisService) {
         this.tokenProvider = tokenProvider;
         this.authenticationManagerBuilder = authenticationManagerBuilder;
         this.userService = userService;
+        this.redisService = redisService;
     }
 
     @PostMapping("/authenticate")
@@ -47,6 +52,11 @@ public class UserJWTController {
         Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
         SecurityContextHolder.getContext().setAuthentication(authentication);
         this.userService.updateStatus(loginVM.getUsername(), true);
+        RedisUser redisUser = new RedisUser();
+        redisUser.setUserLogin(loginVM.getUsername());
+        redisUser.setStartTime(Instant.now());
+        redisUser.setRole(authentication.getAuthorities().toString());
+        redisService.saveRedisUser(redisUser);
         boolean rememberMe = (loginVM.isRememberMe() == null) ? false : loginVM.isRememberMe();
         String jwt = tokenProvider.createToken(authentication, rememberMe);
         HttpHeaders httpHeaders = new HttpHeaders();

@@ -63,4 +63,11 @@
             </column>
         </addColumn>
     </changeSet>
+    <changeSet author="HoiHT (generated)" id="1548661587010-10">
+        <addColumn tableName="jhi_user">
+            <column name="nick_name" type="varchar(200)">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>

@@ -361,6 +361,12 @@
             <artifactId>cucumber-spring</artifactId>
             <scope>test</scope>
         </dependency>
+		<dependency>
+    		<groupId>org.redisson</groupId>
+    		<artifactId>redisson-spring-data-20</artifactId>
+    		<version>3.8.0</version>
+		</dependency>
+        
         <!-- jhipster-needle-maven-add-dependency -->
     </dependencies>
 
