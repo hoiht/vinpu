@@ -1,0 +1,48 @@
+{
+  "generator-jhipster": {
+    "promptValues": {
+      "packageName": "com.vinid.vinpu",
+      "nativeLanguage": "vi"
+    },
+    "jhipsterVersion": "6.10.1",
+    "applicationType": "monolith",
+    "baseName": "vinpu",
+    "packageName": "com.vinid.vinpu",
+    "packageFolder": "com/vinid/vinpu",
+    "serverPort": "8080",
+    "authenticationType": "jwt",
+    "cacheProvider": "redis",
+    "enableHibernateCache": true,
+    "websocket": "spring-websocket",
+    "databaseType": "sql",
+    "devDatabaseType": "mysql",
+    "prodDatabaseType": "mysql",
+    "searchEngine": "elasticsearch",
+    "messageBroker": false,
+    "serviceDiscoveryType": false,
+    "buildTool": "maven",
+    "enableSwaggerCodegen": true,
+    "jwtSecretKey": "NzFjOGMyNTRlN2UyMmJkM2ZlNjc0ZGQ2YjQyOGIyMmJjNzgwNzY2MGJjZTg4YjY0ZTA5ODQ0YTNkYjM4YTllOGY3MGM3OTI4NjA5YjZiN2Q0ODM4YjExOWE3NzNhZGIyMzM1ZjdkYThhMWU3ODFmNzRiNTExODI5YWFlZmVlNTA=",
+    "embeddableLaunchScript": false,
+    "useSass": true,
+    "clientPackageManager": "npm",
+    "clientFramework": "angularX",
+    "clientTheme": "litera",
+    "clientThemeVariant": "primary",
+    "creationTimestamp": 1599575548927,
+    "testFrameworks": ["cucumber"],
+    "jhiPrefix": "jhi",
+    "entitySuffix": "",
+    "dtoSuffix": "DTO",
+    "otherModules": [
+      {
+        "name": "generator-jhipster-ngx-charts",
+        "version": "1.0.3"
+      }
+    ],
+    "enableTranslation": true,
+    "nativeLanguage": "vi",
+    "languages": ["vi", "en"],
+    "blueprints": []
+  }
+}
