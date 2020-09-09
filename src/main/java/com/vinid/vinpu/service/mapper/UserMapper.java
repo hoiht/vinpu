@@ -49,6 +49,7 @@ public class UserMapper {
             user.setImageUrl(userDTO.getImageUrl());
             user.setActivated(userDTO.isActivated());
             user.setLangKey(userDTO.getLangKey());
+            user.setGender(userDTO.getGender());
             user.setCountry(userDTO.getCountry());
             user.setCity(userDTO.getCity());
             user.setProvince(userDTO.getProvince());

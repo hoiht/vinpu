@@ -161,11 +161,22 @@ public class UserTrackingTimeResource {
      * @param endTime
      * @return
      */
-    @GetMapping("/user-tracking-times/dashboard/{userId}")
+    @GetMapping("/user-tracking-times/dashboard-user/{userId}")
     public ResponseEntity<List<Map<String, Object>>> dashboardUser(@PathVariable Long userId, @RequestParam(value="startTime", required=true) Instant startTime,
     		@RequestParam(value="endTime", required=false) Instant endTime) {
         log.debug("REST request to get dashboard UserTrackingTime : {}", userId);
         List<Map<String, Object>> result = userTrackingTimeService.dashboardUser(userId, startTime, endTime);
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+    
+    /**
+     * Get dashboard char by user age.
+     * @return
+     */
+    @GetMapping("/user-tracking-times/dashboard-age")
+    public ResponseEntity<List<Map<String, Object>>> dashboardAge() {
+        log.debug("REST request to get dashboard UserTrackingTime Age");
+        List<Map<String, Object>> result = userTrackingTimeService.dashboardUserAge();
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 }

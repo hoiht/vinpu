@@ -6,6 +6,7 @@ import com.vinid.vinpu.repository.UserRepository;
 import com.vinid.vinpu.repository.UserTrackingTimeRepository;
 import com.vinid.vinpu.repository.search.UserTrackingTimeSearchRepository;
 import com.vinid.vinpu.service.dto.UserTrackingTimeDTO;
+import com.vinid.vinpu.service.mapper.UserMapper;
 import com.vinid.vinpu.service.mapper.UserTrackingTimeMapper;
 import com.vinid.vinpu.service.utils.RedisService;
 import com.vinid.vinpu.web.rest.vm.RedisUser;
@@ -15,6 +16,7 @@ import org.slf4j.LoggerFactory;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -23,6 +25,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -52,14 +55,17 @@ public class UserTrackingTimeService {
     private final UserRepository userRepository;
     
     private final RedisService redisService;
+    
+    private final UserMapper userMapper;
 
     public UserTrackingTimeService(UserTrackingTimeRepository userTrackingTimeRepository, UserTrackingTimeMapper userTrackingTimeMapper, UserTrackingTimeSearchRepository userTrackingTimeSearchRepository,
-    		UserRepository userRepository, RedisService redisService) {
+    		UserRepository userRepository, RedisService redisService, UserMapper userMapper) {
         this.userTrackingTimeRepository = userTrackingTimeRepository;
         this.userTrackingTimeMapper = userTrackingTimeMapper;
         this.userTrackingTimeSearchRepository = userTrackingTimeSearchRepository;
         this.userRepository = userRepository;
         this.redisService = redisService;
+        this.userMapper = userMapper;
     }
 
     /**
@@ -170,15 +176,41 @@ public class UserTrackingTimeService {
      */
     public List<Map<String, Object>> dashboardUser(Long userId, Instant startTime, Instant endTime) {
     	User user = userRepository.findById(userId).orElse(null);
+    	List<Map<String, Object>> results = new ArrayList<Map<String,Object>>();
     	List<Object> listTrackingTime = userTrackingTimeRepository.dashboardUserTracking(userId, startTime, endTime);
+    	if (CollectionUtils.isEmpty(listTrackingTime)) return results;
     	
-    	List<Map<String, Object>> results = listTrackingTime.stream().map(tracking -> {
+    	results = listTrackingTime.stream().map(tracking -> {
     		Map<String, Object> itemTracking = new HashMap<>();
     		Object[] trackingArr = (Object[])tracking;
     		itemTracking.put("time", trackingArr[0].toString());
     		itemTracking.put("value", trackingArr[1].toString());
     		return itemTracking;
     	}).collect(Collectors.toList());
+    	Map<String, Object> userDetail = new HashMap<>();
+    	userDetail.put("userDetail", userMapper.userToUserDTO(user));
+    	results.add(userDetail);
+    	
+    	return results;
+    }
+    
+    /**
+     * Get dashboard for age.
+     * @return
+     */
+    public List<Map<String, Object>> dashboardUserAge() {
+    	List<Map<String, Object>> results = new ArrayList<Map<String,Object>>();
+    	List<Object> listTrackingAge = userTrackingTimeRepository.dashboardUserTrackingAge();
+    	
+    	if (CollectionUtils.isEmpty(listTrackingAge)) return results;
+    	results = listTrackingAge.stream().map(tracking -> {
+    		Map<String, Object> itemTracking = new HashMap<>();
+    		Object[] trackingArr = (Object[])tracking;
+    		itemTracking.put("age", trackingArr[0].toString());
+    		itemTracking.put("countValue", trackingArr[1].toString());
+    		return itemTracking;
+    	}).collect(Collectors.toList());
+    	
     	return results;
     }
 }

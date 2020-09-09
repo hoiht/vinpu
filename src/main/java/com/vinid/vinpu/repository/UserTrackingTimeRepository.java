@@ -31,4 +31,9 @@ public interface UserTrackingTimeRepository extends JpaRepository<UserTrackingTi
     		+ " and (:endTime is null or userTrackingTime.endTime <=:endTime)"
     		+ " GROUP BY DATE(userTrackingTime.endTime)")
     List<Object> dashboardUserTracking(@Param("userId") Long userId, @Param("startTime") Instant startTime, @Param("endTime") Instant endTime);
+    
+    @Query(value="select YEAR(CURRENT_TIMESTAMP) - YEAR(dob) - (RIGHT(CURRENT_TIMESTAMP, 5) < RIGHT(dob, 5)) as age, count(id) as count"
+    		+ " from vinpu.jhi_user"
+    		+ " GROUP BY age", nativeQuery=true)
+    List<Object> dashboardUserTrackingAge();
 }

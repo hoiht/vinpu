@@ -29,6 +29,8 @@ public class UserDTO {
     @Size(max = 50)
     private String lastName;
     
+    private String gender;
+    
     @Size(max = 200)
     private String nickName;
 
@@ -81,6 +83,7 @@ public class UserDTO {
         this.login = user.getLogin();
         this.firstName = user.getFirstName();
         this.lastName = user.getLastName();
+        this.gender = user.getGender();
         this.email = user.getEmail();
         this.activated = user.getActivated();
         this.imageUrl = user.getImageUrl();
@@ -136,7 +139,15 @@ public class UserDTO {
         this.lastName = lastName;
     }
 
-    public String getNickName() {
+    public String getGender() {
+		return gender;
+	}
+
+	public void setGender(String gender) {
+		this.gender = gender;
+	}
+
+	public String getNickName() {
 		return nickName;
 	}
 

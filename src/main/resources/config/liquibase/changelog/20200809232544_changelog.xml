@@ -70,4 +70,11 @@
             </column>
         </addColumn>
     </changeSet>
+    <changeSet author="HoiHT (generated)" id="1548661587010-11">
+        <addColumn tableName="jhi_user">
+            <column name="gender" type="varchar(100)">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>
