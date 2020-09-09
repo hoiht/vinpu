@@ -11,13 +11,17 @@ import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.Instant;
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.StreamSupport;
 
@@ -148,5 +152,20 @@ public class UserTrackingTimeResource {
     public List<UserTrackingTimeDTO> searchUserTrackingTimes(@RequestParam String query) {
         log.debug("REST request to search UserTrackingTimes for query {}", query);
         return userTrackingTimeService.search(query);
+    }
+    
+    /**
+     * Get dashboard chart for user tracking.
+     * @param userId
+     * @param startTime
+     * @param endTime
+     * @return
+     */
+    @GetMapping("/user-tracking-times/dashboard/{userId}")
+    public ResponseEntity<List<Map<String, Object>>> dashboardUser(@PathVariable Long userId, @RequestParam(value="startTime", required=true) Instant startTime,
+    		@RequestParam(value="endTime", required=false) Instant endTime) {
+        log.debug("REST request to get dashboard UserTrackingTime : {}", userId);
+        List<Map<String, Object>> result = userTrackingTimeService.dashboardUser(userId, startTime, endTime);
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 }

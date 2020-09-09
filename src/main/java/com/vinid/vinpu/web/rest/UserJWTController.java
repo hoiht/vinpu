@@ -5,6 +5,7 @@ import com.vinid.vinpu.security.jwt.TokenProvider;
 import com.vinid.vinpu.web.rest.vm.LoginVM;
 import com.vinid.vinpu.web.rest.vm.RedisUser;
 import com.vinid.vinpu.service.UserService;
+import com.vinid.vinpu.service.UserTrackingTimeService;
 import com.vinid.vinpu.service.utils.RedisService;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -36,7 +37,8 @@ public class UserJWTController {
     
     private final RedisService redisService;
 
-    public UserJWTController(TokenProvider tokenProvider, AuthenticationManagerBuilder authenticationManagerBuilder, UserService userService, RedisService redisService) {
+    public UserJWTController(TokenProvider tokenProvider, AuthenticationManagerBuilder authenticationManagerBuilder, UserService userService,
+    		RedisService redisService) {
         this.tokenProvider = tokenProvider;
         this.authenticationManagerBuilder = authenticationManagerBuilder;
         this.userService = userService;
@@ -52,11 +54,13 @@ public class UserJWTController {
         Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
         SecurityContextHolder.getContext().setAuthentication(authentication);
         this.userService.updateStatus(loginVM.getUsername(), true);
+        
         RedisUser redisUser = new RedisUser();
         redisUser.setUserLogin(loginVM.getUsername());
-        redisUser.setStartTime(Instant.now());
+        redisUser.setStartTime(Instant.now().toString());
         redisUser.setRole(authentication.getAuthorities().toString());
-        redisService.saveRedisUser(redisUser);
+        
+        this.redisService.saveRedisUser(redisUser);
         boolean rememberMe = (loginVM.isRememberMe() == null) ? false : loginVM.isRememberMe();
         String jwt = tokenProvider.createToken(authentication, rememberMe);
         HttpHeaders httpHeaders = new HttpHeaders();

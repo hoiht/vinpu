@@ -1,18 +1,33 @@
 package com.vinid.vinpu.service;
 
+import com.vinid.vinpu.domain.User;
 import com.vinid.vinpu.domain.UserTrackingTime;
+import com.vinid.vinpu.repository.UserRepository;
 import com.vinid.vinpu.repository.UserTrackingTimeRepository;
 import com.vinid.vinpu.repository.search.UserTrackingTimeSearchRepository;
 import com.vinid.vinpu.service.dto.UserTrackingTimeDTO;
 import com.vinid.vinpu.service.mapper.UserTrackingTimeMapper;
+import com.vinid.vinpu.service.utils.RedisService;
+import com.vinid.vinpu.web.rest.vm.RedisUser;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Duration;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -33,11 +48,18 @@ public class UserTrackingTimeService {
     private final UserTrackingTimeMapper userTrackingTimeMapper;
 
     private final UserTrackingTimeSearchRepository userTrackingTimeSearchRepository;
+    
+    private final UserRepository userRepository;
+    
+    private final RedisService redisService;
 
-    public UserTrackingTimeService(UserTrackingTimeRepository userTrackingTimeRepository, UserTrackingTimeMapper userTrackingTimeMapper, UserTrackingTimeSearchRepository userTrackingTimeSearchRepository) {
+    public UserTrackingTimeService(UserTrackingTimeRepository userTrackingTimeRepository, UserTrackingTimeMapper userTrackingTimeMapper, UserTrackingTimeSearchRepository userTrackingTimeSearchRepository,
+    		UserRepository userRepository, RedisService redisService) {
         this.userTrackingTimeRepository = userTrackingTimeRepository;
         this.userTrackingTimeMapper = userTrackingTimeMapper;
         this.userTrackingTimeSearchRepository = userTrackingTimeSearchRepository;
+        this.userRepository = userRepository;
+        this.redisService = redisService;
     }
 
     /**
@@ -106,5 +128,57 @@ public class UserTrackingTimeService {
             .stream(userTrackingTimeSearchRepository.search(queryStringQuery(query)).spliterator(), false)
             .map(userTrackingTimeMapper::toDto)
         .collect(Collectors.toList());
+    }
+    
+    /**
+     * Write data to userTrackingTime
+     * @param userLogin
+     * @param isTracking
+     */
+    public void userTrackingTimeLogin(String userLogin) {
+    	RedisUser redisUser = this.redisService.getRedisByUserLogin(userLogin);
+    	User user = userRepository.findOneByLogin(userLogin).orElse(null);
+    	if (user == null) return;
+    	
+    	UserTrackingTimeDTO userTrackingTimeDTO = new UserTrackingTimeDTO();
+    	
+    	userTrackingTimeDTO.setUserId(user.getId());
+    	userTrackingTimeDTO.setUserLogin(user.getLogin());
+    	userTrackingTimeDTO.setEndTime(Instant.now());
+    	
+    	DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSX");
+    	LocalDateTime startTimeFormat = LocalDateTime.parse(redisUser.getStartTime(), formatter);
+    	Instant startTime = startTimeFormat.toInstant(ZoneOffset.UTC);
+    	
+		Duration duration = Duration.between(startTime, Instant.now());
+		long minutes = duration.toMinutes();
+		if (minutes == 0) minutes = 1;
+		
+		userTrackingTimeDTO.setDuration(Double.valueOf(minutes));
+		userTrackingTimeDTO.setStartTime(startTime);
+    	userTrackingTimeDTO.setRole(user.getAuthorities().toString());
+    	
+    	this.save(userTrackingTimeDTO);
+    }
+    
+    /**
+     * Get data dash board for user.
+     * @param userId
+     * @param startTime
+     * @param endTime
+     * @return
+     */
+    public List<Map<String, Object>> dashboardUser(Long userId, Instant startTime, Instant endTime) {
+    	User user = userRepository.findById(userId).orElse(null);
+    	List<Object> listTrackingTime = userTrackingTimeRepository.dashboardUserTracking(userId, startTime, endTime);
+    	
+    	List<Map<String, Object>> results = listTrackingTime.stream().map(tracking -> {
+    		Map<String, Object> itemTracking = new HashMap<>();
+    		Object[] trackingArr = (Object[])tracking;
+    		itemTracking.put("time", trackingArr[0].toString());
+    		itemTracking.put("value", trackingArr[1].toString());
+    		return itemTracking;
+    	}).collect(Collectors.toList());
+    	return results;
     }
 }

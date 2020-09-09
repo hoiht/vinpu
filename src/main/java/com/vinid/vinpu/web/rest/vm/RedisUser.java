@@ -9,13 +9,11 @@ import org.springframework.data.redis.core.RedisHash;
 @RedisHash("RedisUser")
 public class RedisUser {
     private Long id;
-    
-    private String login;
 	
 	@NotNull
-    private Instant startTime;
+    private String startTime;
 
-    private Instant endTime;
+    private String endTime;
 
     private Double duration;
 
@@ -33,27 +31,19 @@ public class RedisUser {
 		this.id = id;
 	}
 
-	public String getLogin() {
-		return login;
-	}
-
-	public void setLogin(String login) {
-		this.login = login;
-	}
-
-	public Instant getStartTime() {
+	public String getStartTime() {
 		return startTime;
 	}
 
-	public void setStartTime(Instant startTime) {
+	public void setStartTime(String startTime) {
 		this.startTime = startTime;
 	}
 
-	public Instant getEndTime() {
+	public String getEndTime() {
 		return endTime;
 	}
 
-	public void setEndTime(Instant endTime) {
+	public void setEndTime(String endTime) {
 		this.endTime = endTime;
 	}
 

@@ -3,6 +3,7 @@ package com.vinid.vinpu.web.websocket;
 import static com.vinid.vinpu.config.WebsocketConfiguration.IP_ADDRESS;
 
 import com.vinid.vinpu.service.UserService;
+import com.vinid.vinpu.service.UserTrackingTimeService;
 import com.vinid.vinpu.service.utils.RedisService;
 import com.vinid.vinpu.web.rest.vm.RedisUser;
 import com.vinid.vinpu.web.websocket.dto.ActivityDTO;
@@ -28,12 +29,12 @@ public class ActivityService implements ApplicationListener<SessionDisconnectEve
     
     private final UserService userService;
     
-    private final RedisService redisService;
+    private final UserTrackingTimeService userTrackingTimeService;
 
-    public ActivityService(SimpMessageSendingOperations messagingTemplate, UserService userService, RedisService redisService) {
+    public ActivityService(SimpMessageSendingOperations messagingTemplate, UserService userService, UserTrackingTimeService userTrackingTimeService) {
         this.messagingTemplate = messagingTemplate;
         this.userService = userService;
-        this.redisService = redisService;
+        this.userTrackingTimeService = userTrackingTimeService;
     }
 
     @MessageMapping("/topic/activity")
@@ -50,8 +51,10 @@ public class ActivityService implements ApplicationListener<SessionDisconnectEve
     @Override
     public void onApplicationEvent(SessionDisconnectEvent event) {
         ActivityDTO activityDTO = new ActivityDTO();
-        this.userService.updateStatus(event.getUser().getName(), false);
-        RedisUser redis = redisService.getRedisUserByToken(event.getUser().getName());
+        Principal principal = event.getUser();
+        
+        this.userService.updateStatus(principal.getName(), false);
+        this.userTrackingTimeService.userTrackingTimeLogin(principal.getName());
         activityDTO.setSessionId(event.getSessionId());
         activityDTO.setPage("logout");
         messagingTemplate.convertAndSend("/topic/tracker", activityDTO);

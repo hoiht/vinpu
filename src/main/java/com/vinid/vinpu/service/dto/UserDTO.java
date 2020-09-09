@@ -28,6 +28,9 @@ public class UserDTO {
 
     @Size(max = 50)
     private String lastName;
+    
+    @Size(max = 200)
+    private String nickName;
 
     @Email
     @Size(min = 5, max = 254)
@@ -82,6 +85,16 @@ public class UserDTO {
         this.activated = user.getActivated();
         this.imageUrl = user.getImageUrl();
         this.langKey = user.getLangKey();
+        this.nickName = user.getNickName();
+        this.country = user.getCountry();
+        this.city = user.getCity();
+        this.dob = user.getDob();
+        this.about = user.getAbout();
+        this.phone = user.getPhone();
+        this.ward = user.getWard();
+        this.street = user.getStreet();
+        this.province = user.getProvince();
+        this.status = user.isStatus();
         this.createdBy = user.getCreatedBy();
         this.createdDate = user.getCreatedDate();
         this.lastModifiedBy = user.getLastModifiedBy();
@@ -123,7 +136,15 @@ public class UserDTO {
         this.lastName = lastName;
     }
 
-    public String getEmail() {
+    public String getNickName() {
+		return nickName;
+	}
+
+	public void setNickName(String nickName) {
+		this.nickName = nickName;
+	}
+
+	public String getEmail() {
         return email;
     }
 

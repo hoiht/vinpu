@@ -9,6 +9,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vinid.vinpu.web.rest.vm.RedisUser;
+import org.json.JSONObject;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -28,7 +29,7 @@ public class RedisService {
 	
 	public void saveRedisUser(RedisUser redisUser) {
 		try {
-			String userKey = KEY_USER + redisUser.getLogin();
+			String userKey = KEY_USER + redisUser.getUserLogin();
 			redisTemplate.opsForValue().set(userKey, mapper.writeValueAsString(redisUser));
 		} catch (JsonProcessingException e) {
 			// TODO Auto-generated catch block
@@ -36,12 +37,13 @@ public class RedisService {
 		}
 	}
 	
-	public RedisUser getRedisUserByToken(String redisKey) {
+	public RedisUser getRedisByUserLogin(String redisKey) {
 		RedisUser redisUser = new RedisUser(); 
 		try {
 			String userKey = KEY_USER + redisKey;
 			Object jsonOutput = redisTemplate.opsForValue().get(userKey);
 			redisUser = mapper.readValue(jsonOutput.toString(), RedisUser.class);
+			redisTemplate.delete(userKey);
 		} catch (JsonMappingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

@@ -160,6 +160,16 @@ public class UserService {
         user.setResetKey(RandomUtil.generateResetKey());
         user.setResetDate(Instant.now());
         user.setActivated(true);
+        user.setCountry(userDTO.getCountry());
+        user.setCity(userDTO.getCity());
+        user.setProvince(userDTO.getProvince());
+        user.setWard(userDTO.getWard());
+        user.setDob(userDTO.getDob());
+        user.setPhone(userDTO.getPhone());
+        user.setAbout(userDTO.getAbout());
+        user.setStreet(userDTO.getStreet());
+        user.setNickName(userDTO.getNickName());
+        
         if (userDTO.getAuthorities() != null) {
             Set<Authority> authorities = userDTO.getAuthorities().stream()
                 .map(authorityRepository::findById)
@@ -197,6 +207,15 @@ public class UserService {
                 user.setImageUrl(userDTO.getImageUrl());
                 user.setActivated(userDTO.isActivated());
                 user.setLangKey(userDTO.getLangKey());
+                user.setCountry(userDTO.getCountry());
+                user.setCity(userDTO.getCity());
+                user.setProvince(userDTO.getProvince());
+                user.setWard(userDTO.getWard());
+                user.setDob(userDTO.getDob());
+                user.setPhone(userDTO.getPhone());
+                user.setAbout(userDTO.getAbout());
+                user.setStreet(userDTO.getStreet());
+                user.setNickName(userDTO.getNickName());
                 Set<Authority> managedAuthorities = user.getAuthorities();
                 managedAuthorities.clear();
                 userDTO.getAuthorities().stream()
