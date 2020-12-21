@@ -17,6 +17,7 @@
 
     <include file="config/liquibase/changelog/20200809232544_changelog.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20200908181009_added_entity_UserTrackingTime.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20200912162054_added_entity_Order.xml" relativeToChangelogFile="false"/>
     <!-- jhipster-needle-liquibase-add-changelog - JHipster will add liquibase changelogs here -->
     <include file="config/liquibase/changelog/20200908181009_added_entity_constraints_UserTrackingTime.xml" relativeToChangelogFile="false"/>
     <!-- jhipster-needle-liquibase-add-constraints-changelog - JHipster will add liquibase constraints changelogs here -->

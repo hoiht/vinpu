@@ -8,6 +8,7 @@
       "entities": {
         "main": "Thực thể",
         "userTrackingTime": "User Tracking Time",
+        "order": "Order",
         "jhipster-needle-menu-add-entry": "JHipster will add additional entities here (do not translate!)"
       },
       "account": {

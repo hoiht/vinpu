@@ -8,6 +8,10 @@ import { RouterModule } from '@angular/router';
         path: 'user-tracking-time',
         loadChildren: () => import('./user-tracking-time/user-tracking-time.module').then(m => m.VinpuUserTrackingTimeModule),
       },
+      {
+        path: 'order',
+        loadChildren: () => import('./order/order.module').then(m => m.VinpuOrderModule),
+      },
       /* jhipster-needle-add-entity-route - JHipster will add entity modules routes here */
     ]),
   ],
